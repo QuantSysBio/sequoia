@@ -29,7 +29,7 @@ Enter `bash Miniconda3-latest-Linux-x86_64.sh` and follow the instructions.
 After that, create the SPIsnake environment as described under **Installation**.
 
 ### Clone repo + upload data
-Enter `git clone https://github.com/QuantSysBio/Sequoia` to retrieve the latest code. You might need to [generate a token](https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/) since GitHub recently removed the password authentication.
+Enter `git clone https://github.com/QuantSysBio/sequoia` to retrieve the latest code. You might need to [generate a token](https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/) since GitHub recently removed the password authentication.
 If necessary, deposit your data in the correct directory using `sftp`, `scp` or `rsync`. Instructions can be found in the [QSB getting started](https://pad.gwdg.de/s/JlkAOXJ2f#) document.
 
 ### Cluster execution
@@ -40,7 +40,7 @@ If necessary, deposit your data in the correct directory using `sftp`, `scp` or 
 `conda activate snakemake`
 - Submit the job to the `elbe` partition. (You can get an overview about which compute nodes are assigned to which partition by calling `sinfo`.)  
 ```
-snakemake --use-singularity --cluster-config src/cluster.yaml --cluster "sbatch -p {cluster.partition} -N {cluster.nodes} -c {cluster.ncpus} --mem {cluster.mem} --job-name {cluster.job-name} -o {cluster.output} -D {cluster.chdir} --exclusive" --conda-frontend conda -j 3 -w 600 --restart-times 3 --resources load=100
+snakemake --use-singularity --use-conda --cluster-config src/cluster.yaml --cluster "sbatch -p {cluster.partition} -N {cluster.nodes} -c {cluster.ncpus} --mem {cluster.mem} --job-name {cluster.job-name} -o {cluster.output} -D {cluster.chdir} --exclusive" --conda-frontend conda -j 3 -w 600 --restart-times 3 --resources load=100
 ```
 - Detach from the screen session by pressing `Ctrl+a+d`. You can resume to the session to check the progress via `screen -r spisnake`
 
