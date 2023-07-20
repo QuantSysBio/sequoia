@@ -1,0 +1,16 @@
+# Paths to references
+
+reference:
+    genome_fasta: data/reference/GRCh38.primary_assembly.genome.fa
+    transcriptome_fasta: data/reference/gencode.v40.transcripts.fa
+    reference_proteome_fasta: data/reference/uniprot_2023.03.02_07.57.59.57.fasta
+    gencode_translation_sequences_fasta: data/reference/gencode.v40.pc_translations.fa
+    reference_gtf: data/reference/gencode.v40.primary_assembly.annotation.gtf
+    reference_gff3: data/reference/gencode.v40.primary_assembly.annotation.gff3
+    gencode_metadata_TrEMBL: data/reference/gencode.v40.metadata.TrEMBL
+    gencode_metadata_SwissProt: data/reference/gencode.v40.metadata.SwissProt
+
+links:
+    RNAsamba_partial_weights: https://raw.githubusercontent.com/apcamargo/RNAsamba/master/data/partial_length_weights.hdf5
+    hhsuite_dbs_pfamA: wwwuser.gwdg.de/~compbiol/data/hhsuite/databases/hhsuite_dbs/pfamA_32.0.tar.gz
+...

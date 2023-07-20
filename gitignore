@@ -1,0 +1,12 @@
+# Workflow
+data/*
+results/*
+
+# Snakemake
+.snakemake/
+.conda/
+*.dot
+*.svg
+*.html
+Rplots.pdf
+report.html
