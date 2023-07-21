@@ -27,8 +27,8 @@ if (exists("snakemake")) {
   prot <- read.fasta(snakemake@input[["prot"]], whole.header=T)
   
   # transcript-level filtering options
-  min_filt_samples = snakemake@params[["min_filt_samples"]] # in at leat # samples
-  min_filt_counts = snakemake@params[["min_filt_counts"]]  # min counts 
+  min_filt_samples <- snakemake@params[["min_filt_samples"]] # in at leat # samples
+  min_filt_counts <- snakemake@params[["min_filt_counts"]]  # min counts 
   
   # Load the GENCODE mapping transcript-Uniprot
   tr_SwPr_colnames <- c("TXNAME", "SwissProt", "SwissProt_2")
@@ -45,23 +45,23 @@ if (exists("snakemake")) {
   expr.files <- as.character(snakemake@input[["tr_quant"]])
 } else {
   ### Manual execution
-  prot <- read.fasta("data/reference/gencode.v43.pc_translations.fa", whole.header=T)
+  prot <- read.fasta("data/reference/gencode.v40.pc_translations.fa", whole.header=T)
   
   min_filt_samples = 1 # in at leat # samples
   min_filt_counts = 10  # min counts
   
   # Load the GENCODE mapping transcript-Uniprot
   tr_SwPr_colnames <- c("TXNAME", "SwissProt", "SwissProt_2")
-  tr_SwPr <- read_tsv("data/reference/gencode.v43.metadata.SwissProt", col_names = tr_SwPr_colnames)
+  tr_SwPr <- read_tsv("data/reference/gencode.v40.metadata.SwissProt", col_names = tr_SwPr_colnames)
   tr_SwPr$SwissProt_2 <- NULL
   
   # Load the GENCODE mapping transcript-TrEMBL
   tr_TrEMBL_colnames <- c("TXNAME", "TrEMBL", "TrEMBL_2")
-  tr_TrEMBL <- read_tsv("data/reference/gencode.v43.metadata.TrEMBL", col_names = tr_TrEMBL_colnames)
+  tr_TrEMBL <- read_tsv("data/reference/gencode.v40.metadata.TrEMBL", col_names = tr_TrEMBL_colnames)
   tr_TrEMBL$TrEMBL_2 <- NULL
   
   # Salmon inputs
-  reference_gff3 <- read_gff("data/reference/gencode.v43.primary_assembly.annotation.gff3")
+  reference_gff3 <- read_gff("data/reference/gencode.v40.primary_assembly.annotation.gff3")
   expr.files <- list.files("results", pattern = "quant.sf", recursive = T, full.names = T)
 }
 
@@ -70,6 +70,7 @@ expr.names <- expr.files %>%
   str_remove_all(pattern = "\\/quant.sf") %>%
   str_split_fixed(pattern = "[/]", n = Inf) %>%
   as_tibble()
+
 expr.names <- pull(expr.names, ncol(expr.names)) 
 expr.names
 
@@ -78,7 +79,7 @@ tx2gene <- reference_gff3 %>%
   filter(type == "transcript") %>%
   select(transcript_id, gene_id) %>%
   unique() %>%
-  rename(GENEID = gene_id, 
+  dplyr::rename(GENEID = gene_id, 
          TXNAME = transcript_id)
 
 ### Include ERCCs
@@ -86,7 +87,7 @@ if (file.exists("data/reference/ERCC_spike-ins/ercc_gencode.gff")) {
   ERCC_names <- read_gff("data/reference/ERCC_spike-ins/ercc_gencode.gff") %>%
     as_tibble() %>%
     select(seqnames, gene_id) %>%
-    rename(GENEID = gene_id, 
+    dplyr::rename(GENEID = gene_id, 
            TXNAME = seqnames)
   
   tx2gene <- bind_rows(ERCC_names, tx2gene)
@@ -111,7 +112,7 @@ ERCC_present <- any(grepl("ERCC-", rownames(import[["counts"]])))
 ERCC_counts <- import[["counts"]][grepl("ERCC-", rownames(import[["counts"]])),]
 ERCC_present <- sum(rowSums(ERCC_counts >= min_filt_counts) >= min_filt_samples) / nrow(ERCC_counts) > 0.5
 if (is.na(ERCC_present)) {
-  ERCC_present <- F
+  ERCC_present <- FALSE
 }
 
 if (ERCC_present) {
@@ -136,7 +137,8 @@ if (ERCC_present) {
   colnames(expressed_tr)[1] <- "TXNAME"
   
   # Normalize TPM using known lib.size factors
-  expressed_tr_tpm <- sweep(as.data.frame(import$abundance[idx,]), 2, dds$sizeFactor, FUN = '/') %>% as.data.frame()
+  expressed_tr_tpm <- sweep(as.data.frame(import$abundance[idx,]), 2, dds$sizeFactor, FUN = '/') %>% 
+    as.data.frame()
   
   tmp <- rownames(expressed_tr)
   tmp <- stringr::str_split_fixed(tmp, pattern="\\|",n=Inf) %>% as.data.frame()
@@ -153,7 +155,6 @@ if (ERCC_present) {
     dds <- DESeq2::DESeqDataSetFromMatrix(countData = round(import$counts), colData = condition, ~ sample)
   }
   dds <- DESeq2::estimateSizeFactors(dds)
-
 
   idx <- rowSums(import$counts >= min_filt_counts ) >= min_filt_samples
   expressed_tr <- import$counts[idx,] %>% as.data.frame()
@@ -177,9 +178,8 @@ if (ERCC_present) {
 Ensembl_proteins <- names(prot)
 Ensembl_proteins <- names(prot)[grep(pattern = "ENS", x = Ensembl_proteins)]
 Ensembl_proteins_names <- stringr::str_split_fixed(Ensembl_proteins, pattern="\\|",n=Inf) %>% as.data.frame()
-# Ensembl_proteins_names$V5 <- gsub(pattern = "transcript:", replacement = "", Ensembl_proteins_names$V5)
-EnsP <- data.frame("protein"=Ensembl_proteins_names$V1,
-                   "TXNAME"=Ensembl_proteins_names$V2)
+EnsP <- data.frame("protein" = Ensembl_proteins_names$V1,
+                   "TXNAME" = Ensembl_proteins_names$V2)
 
 # 2. de-novo transdecoder proteins
 Ensembl_proteins <- names(prot)
