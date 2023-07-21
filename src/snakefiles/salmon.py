@@ -1,6 +1,6 @@
 rule salmon_decoys:
     input:
-        features["reference"]["genome_fasta"]
+        config["reference"]["genome_fasta"]
     output: 
         "results/trascriptome_quant/salmon/decoys.txt"
     benchmark: 
@@ -11,8 +11,7 @@ rule salmon_decoys:
         "salmon.yaml"
     resources:
         ncpus = 1,
-        mem = config["min_mem"],
-        time = config["max_time"],
+        mem = config["resources"]["min_mem"],
         load = 1
     shell: 
         """
@@ -24,8 +23,8 @@ rule salmon_decoys:
 
 rule salmon_gentrome:
     input:
-        genome_fasta = features["reference"]["genome_fasta"],
-        transcriptome_fasta = features["reference"]["transcriptome_fasta"]
+        genome_fasta = config["reference"]["genome_fasta"],
+        transcriptome_fasta = config["reference"]["transcriptome_fasta"]
     output: 
         gentrome="results/trascriptome_quant/salmon/gentrome.fasta"
     benchmark: 
@@ -36,8 +35,7 @@ rule salmon_gentrome:
         "R_remove_duplicates.yaml"
     resources:
         ncpus = 1,
-        mem = config["min_mem"],
-        time = config["max_time"],
+        mem = config["resources"]["min_mem"],
         load = 10
     script: 
         "salmon_gentrome_ERCC.R"
@@ -45,7 +43,7 @@ rule salmon_gentrome:
 
 rule salmon_index:
     input: 
-        transcripts_fa = features["reference"]["transcriptome_fasta"],
+        transcripts_fa = config["reference"]["transcriptome_fasta"],
         decoys = "results/trascriptome_quant/salmon/decoys.txt",
         gentrome = "results/trascriptome_quant/salmon/gentrome.fasta"
     output: 
@@ -57,33 +55,34 @@ rule salmon_index:
     conda: 
         "salmon.yaml"
     resources:
-        ncpus = config["max_cpus"],
-        mem = config["max_mem"],
-        time = config["max_time"],
+        ncpus = config["resources"]["max_cpus"],
+        mem = config["resources"]["max_mem"],
         load = 50
     params: 
-        n = config["max_cpus"]
+        n = config["resources"]["max_cpus"]
     shell: 
-        "salmon index \
-            --transcripts {input.gentrome} \
-            --index {output} \
-            --decoys {input.decoys} \
-            --kmerLen 31 \
-            -p {params.n}\
-            --keepDuplicates \
-            --gencode \
-            2> {log}"
+        """
+        salmon index
+        --transcripts {input.gentrome}
+        --index {output}
+        --decoys {input.decoys}
+        --kmerLen 31
+        -p {params.n}
+        --keepDuplicates
+        --gencode
+        2> {log}
+        """
 
 
 ### Selective alignment
 rule salmon_quant:
     input: 
-        index="results/trascriptome_quant/salmon/transcriptome_index",
-        transcripts_fa = features["reference"]["transcriptome_fasta"],
+        index = "results/trascriptome_quant/salmon/transcriptome_index",
+        transcripts_fa = config["reference"]["transcriptome_fasta"],
         read1 = join(reads_trimmed, PATTERN_R1_trimmed),
         read2 = join(reads_trimmed, PATTERN_R2_trimmed)
     output: 
-        tr_quant_sa="results/trascriptome_quant/salmon/{sample}/quant.sf"
+        tr_quant_sa = "results/trascriptome_quant/salmon/{sample}/quant.sf"
     benchmark: 
         "results/benchmarks/salmon_quant_{sample}.txt"
     log: 
@@ -91,27 +90,28 @@ rule salmon_quant:
     conda: 
         "salmon.yaml"
     resources:
-        ncpus = config["salmon_cpus"],
-        mem = config["salmon_mem"],
-        time = config["max_time"],
+        ncpus = config["program_specific"]["salmon_cpus"],
+        mem = config["program_specific"]["salmon_mem"],
         load = 25
     params: 
-        n = config["salmon_cpus"],
-        salmon_Gibbs_samples = config["salmon_Gibbs_samples"]
+        n = config["program_specific"]["salmon_cpus"],
+        salmon_Gibbs_samples = config["program_specific"]["salmon_Gibbs_samples"]
     shell: 
-        "salmon quant \
-            --libType A \
-            -i {input.index} \
-            -p {params.n} \
-            -1 {input.read1} \
-            -2 {input.read2} \
-            -o results/trascriptome_quant/salmon/{wildcards.sample}/ \
-            --validateMappings \
-            --mimicBT2 \
-            --rangeFactorizationBins 4 \
-            --seqBias \
-            --gcBias \
-            --reduceGCMemory \
-            --posBias \
-            --numGibbsSamples {params.salmon_Gibbs_samples} \
-            2> {log}"
+        """
+        salmon quant
+        --libType A
+        -i {input.index}
+        -p {params.n}
+        -1 {input.read1}
+        -2 {input.read2}
+        -o results/trascriptome_quant/salmon/{wildcards.sample}/
+        --validateMappings
+        --mimicBT2
+        --rangeFactorizationBins 4
+        --seqBias
+        --gcBias
+        --reduceGCMemory
+        --posBias
+        --numGibbsSamples {params.salmon_Gibbs_samples}
+        2> {log}
+        """

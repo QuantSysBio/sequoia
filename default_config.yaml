@@ -1,0 +1,33 @@
+resources:
+  max_mem: 240G
+  min_mem: 5G
+  min_cpus: 1
+  max_cpus:  72
+
+slurm:
+  partition: "elbe"
+  nodes: 1
+  time: 2-00:00:00
+  ncpus: "{resources.ncpus}"
+  mem: "{resources.mem}"
+  job_name: "{rule}"
+  output: "outfiles/%J.out"
+
+reference:
+  genome_fasta: ../../data/reference/GRCh38.primary_assembly.genome.fa
+  transcriptome_fasta: ../../data/reference/gencode.v40.transcripts.fa
+  gencode_translation_sequences_fasta: ../../data/reference/gencode.v40.pc_translations.fa
+  reference_gtf: ../../data/reference/gencode.v40.primary_assembly.annotation.gtf
+  reference_gff3: ../../data/reference/gencode.v40.primary_assembly.annotation.gff3
+  gencode_metadata_TrEMBL: ../../data/reference/gencode.v40.metadata.TrEMBL
+  gencode_metadata_SwissProt: ../../data/reference/gencode.v40.metadata.SwissProt
+
+program_specific:
+  fastp_cpus: 24
+  salmon_cpus: 18
+  salmon_mem: 32G
+  salmon_Gibbs_samples: 50
+  min_filt_samples: 1
+  min_filt_counts: 10
+  phred_score: 20
+...

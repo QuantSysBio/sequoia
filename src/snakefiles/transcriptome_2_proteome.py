@@ -8,7 +8,7 @@ rule expression_cutoffs_for_proteome_db:
         reference_gff3 = features["reference"]["reference_gff3"],
         gencode_metadata_TrEMBL = features["reference"]["gencode_metadata_TrEMBL"],
         gencode_metadata_SwissProt = features["reference"]["gencode_metadata_SwissProt"],
-        tr_quant=expand("results/trascriptome_quant/salmon/{sample}/quant.sf", sample = SAMPLES)
+        tr_quant = expand("results/trascriptome_quant/salmon/{sample}/quant.sf", sample=SAMPLES)
     output:
         expr_prot = "results/tr_2_prot/proteome_expressed.fasta",
         gene_tr_prot = "results/tr_2_prot/gene_tr_prot.csv",

@@ -8,7 +8,6 @@
 #               
 # author:       YH
 
-print("Starting")
 ### Log
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)
