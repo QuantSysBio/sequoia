@@ -2,18 +2,26 @@ import os
 import sys
 import subprocess
 import yaml
+import shutil
 
 
 def prepare_working_directory(server_project_dir_path, sequoia_project_dir_path):
-    assert not os.path.exists(sequoia_project_dir_path)
-    os.mkdir(sequoia_project_dir_path)
-    os.mkdir(f'{sequoia_project_dir_path}/data')
-    os.mkdir(f'{sequoia_project_dir_path}/outfiles')
+    if not os.path.exists(sequoia_project_dir_path):
+        os.mkdir(sequoia_project_dir_path)
+
+    if not os.path.exists(f'{sequoia_project_dir_path}/data'):
+        os.mkdir(f'{sequoia_project_dir_path}/data')
+    
+    if not os.path.exists(f'{sequoia_project_dir_path}/outfiles'):
+        os.mkdir(f'{sequoia_project_dir_path}/outfiles')
 
     assert os.path.exists(f'{server_project_dir_path}/data/reads_fq')
-    os.symlink(f'{server_project_dir_path}/data/reads_fq',
-               f'{sequoia_project_dir_path}/data/reads_fq')
+    if not os.path.exists(f'{sequoia_project_dir_path}/data/reads_fq'):
+        os.symlink(f'{server_project_dir_path}/data/reads_fq',
+                f'{sequoia_project_dir_path}/data/reads_fq')
 
+    shutil.copyfile('/home/martin.pasen/sequoia/default_config.yaml',
+                    sequoia_project_dir_path)
 
 
 def combine_config_with_default(config):
