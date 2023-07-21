@@ -18,10 +18,10 @@ def prepare_working_directory(server_project_dir_path, sequoia_project_dir_path)
     assert os.path.exists(f'{server_project_dir_path}/data/reads_fq')
     if not os.path.exists(f'{sequoia_project_dir_path}/data/reads_fq'):
         os.symlink(f'{server_project_dir_path}/data/reads_fq',
-                f'{sequoia_project_dir_path}/data/reads_fq')
+                   f'{sequoia_project_dir_path}/data/reads_fq')
 
     shutil.copyfile('default_config.yaml',
-                    sequoia_project_dir_path)
+                    f'{sequoia_project_dir_path}/config.yaml')
 
 
 def combine_config_with_default(config):
