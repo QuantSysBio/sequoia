@@ -7,12 +7,13 @@ import yaml
 def prepare_working_directory(server_project_dir_path, sequoia_project_dir_path):
     assert not os.path.exists(sequoia_project_dir_path)
     os.mkdir(sequoia_project_dir_path)
-
-    assert os.path.exists(f'{server_project_dir_path}/data/rna_seq.seq')
-    os.symlink(f'{server_project_dir_path}/data/rna_seq.seq',
-               f'{sequoia_project_dir_path}/data/rna_seq.seq')
-
+    os.mkdir(f'{sequoia_project_dir_path}/data')
     os.mkdir(f'{sequoia_project_dir_path}/outfiles')
+
+    assert os.path.exists(f'{server_project_dir_path}/data/reads_fq')
+    os.symlink(f'{server_project_dir_path}/data/reads_fq',
+               f'{sequoia_project_dir_path}/data/reads_fq')
+
 
 
 def combine_config_with_default(config):
