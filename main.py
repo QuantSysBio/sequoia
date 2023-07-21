@@ -20,7 +20,7 @@ def prepare_working_directory(server_project_dir_path, sequoia_project_dir_path)
         os.symlink(f'{server_project_dir_path}/data/reads_fq',
                 f'{sequoia_project_dir_path}/data/reads_fq')
 
-    shutil.copyfile('/home/martin.pasen/sequoia/default_config.yaml',
+    shutil.copyfile('default_config.yaml',
                     sequoia_project_dir_path)
 
 
