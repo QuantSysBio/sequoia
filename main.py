@@ -16,8 +16,8 @@ def prepare_working_directory(server_project_dir_path, sequoia_project_dir_path,
 
     assert os.path.exists(f'{server_project_dir_path}/data/reads_fq')
     if not os.path.exists(f'{sequoia_project_dir_path}/data/reads_fq'):
-        shutil.copytree(f'{server_project_dir_path}/data/reads_fq',
-                        f'{sequoia_project_dir_path}/data/reads_fq')
+        os.symlink(f'{server_project_dir_path}/data/reads_fq',
+                   f'{sequoia_project_dir_path}/data/reads_fq')
     
     # outfiles
     if not os.path.exists(f'{sequoia_project_dir_path}/outfiles'):
@@ -25,8 +25,8 @@ def prepare_working_directory(server_project_dir_path, sequoia_project_dir_path,
 
     # references
     if not os.path.exists(f'{sequoia_project_dir_path}/references'):
-        shutil.copytree(f'{sequoia_dir_path}/references',
-                        f'{sequoia_project_dir_path}/references')
+        os.symlink(f'{sequoia_dir_path}/references',
+                   f'{sequoia_project_dir_path}/references')
         
     #config
     with open(f'{sequoia_project_dir_path}/config.yaml', 'w') as yamlfile:
@@ -109,7 +109,7 @@ if __name__ == '__main__':
         f'-D {sequoia_project_dir_path} --exclusive',
         '--cluster-cancel', 'scancel',
         '--conda-frontend', 'mamba',
-        '--singularity-args', f'-B {sequoia_dir_path}:{sequoia_dir_path}',
+        '--singularity-args', f'-B {sequoia_dir_path},{server_project_dir_path}/data/reads_fq',
         '--conda-prefix', f'{sequoia_dir_path}/.snakemake',
         '--singularity-prefix', f'{sequoia_dir_path}/.snakemake',
         '-j', '3',
