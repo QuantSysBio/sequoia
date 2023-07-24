@@ -1,6 +1,6 @@
 rule multiqc:
     input:
-        gene_expression="results/trascriptome_quant/gene_expression.csv"
+        gene_expression="results/transcriptome_quant/gene_expression.csv"
     output: 
         multiqc_report="results/multiqc/multiqc_report.html"
     benchmark: 
@@ -13,8 +13,4 @@ rule multiqc:
         ncpus = 1,
         mem = config["resources"]["max_mem"]      
     shell: 
-        """
-        multiqc -f results/
-        -o results/multiqc
-        2> {log}
-        """
+        "multiqc -f results/ -o results/multiqc 2> {log}"

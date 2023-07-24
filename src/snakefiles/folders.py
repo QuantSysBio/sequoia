@@ -2,6 +2,4 @@
 download = "data/download"
 reads_fq = "data/reads_fq"
 reads_trimmed = "results/trimmed"
-STAR_index_dir = "results/STAR_index"
-TRANSDECODER_dir = "results/tr_2_prot/merged_reference.transcripts.fasta.transdecoder_dir"
 tr_2_prot_dir = "results/tr_2_prot"

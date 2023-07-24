@@ -8,9 +8,8 @@ container: "docker://snakemake/snakemake:v6.8.0"
 min_version("6.0")
 
 config = yaml.load(open("config.yaml", "r"), Loader=yaml.FullLoader)
-features = yaml.load(open("../../features.yaml", "r"), Loader=yaml.FullLoader)
 
-snakefiles = "../../src/snakefiles/"
+snakefiles = "snakefiles/"
 include: snakefiles + "folders.py"
 include: snakefiles + "reads_wildcards.py"
 include: snakefiles + "pre_process.py"
@@ -29,7 +28,7 @@ rule all:
         expr_prot = "results/tr_2_prot/proteome_expressed.fasta",
         
         ### Salmon: selective alignment
-        tr_quant_sa = expand("results/trascriptome_quant/salmon/{sample}/quant.sf", sample = SAMPLES),
+        tr_quant_sa = expand("results/transcriptome_quant/salmon/{sample}/quant.sf", sample = SAMPLES),
 
         ### MultiQC
         multiqc_report = "results/multiqc/multiqc_report.html"

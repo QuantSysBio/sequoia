@@ -17,15 +17,13 @@ rule fastp_pe:
     log: 
         json = "results/logs/{sample}.fastp.json"
     shell:
-        """
-        fastp -i {input.read1}
-        -I {input.read2}
-        -o {output.read1}
-        -O {output.read2}
-        -j {log.json}
-        --qualified_quality_phred {params.phred}
-        --correction
-        --verbose
-        --low_complexity_filter
-        --thread {params.n}
-        """
+        "fastp -i {input.read1} \
+        -I {input.read2} \
+        -o {output.read1} \
+        -O {output.read2} \
+        -j {log.json} \
+        --qualified_quality_phred {params.phred} \
+        --correction \
+        --verbose \
+        --low_complexity_filter \
+        --thread {params.n}"

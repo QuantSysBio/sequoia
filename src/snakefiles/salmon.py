@@ -2,7 +2,7 @@ rule salmon_decoys:
     input:
         config["reference"]["genome_fasta"]
     output: 
-        "results/trascriptome_quant/salmon/decoys.txt"
+        "results/transcriptome_quant/salmon/decoys.txt"
     benchmark: 
         "results/benchmarks/salmon_decoys.txt"
     log: 
@@ -26,7 +26,7 @@ rule salmon_gentrome:
         genome_fasta = config["reference"]["genome_fasta"],
         transcriptome_fasta = config["reference"]["transcriptome_fasta"]
     output: 
-        gentrome="results/trascriptome_quant/salmon/gentrome.fasta"
+        gentrome="results/transcriptome_quant/salmon/gentrome.fasta"
     benchmark: 
         "results/benchmarks/salmon_gentrome.txt"
     log: 
@@ -44,10 +44,10 @@ rule salmon_gentrome:
 rule salmon_index:
     input: 
         transcripts_fa = config["reference"]["transcriptome_fasta"],
-        decoys = "results/trascriptome_quant/salmon/decoys.txt",
-        gentrome = "results/trascriptome_quant/salmon/gentrome.fasta"
+        decoys = "results/transcriptome_quant/salmon/decoys.txt",
+        gentrome = "results/transcriptome_quant/salmon/gentrome.fasta"
     output: 
-        directory("results/trascriptome_quant/salmon/transcriptome_index"),
+        directory("results/transcriptome_quant/salmon/transcriptome_index"),
     benchmark: 
         "results/benchmarks/salmon_index.txt"
     log: 
@@ -61,28 +61,26 @@ rule salmon_index:
     params: 
         n = config["resources"]["max_cpus"]
     shell: 
-        """
-        salmon index
-        --transcripts {input.gentrome}
-        --index {output}
-        --decoys {input.decoys}
-        --kmerLen 31
-        -p {params.n}
-        --keepDuplicates
-        --gencode
-        2> {log}
-        """
+        "salmon index \
+        --transcripts {input.gentrome} \
+        --index {output} \
+        --decoys {input.decoys} \
+        --kmerLen 31 \
+        -p {params.n}\
+        --keepDuplicates \
+        --gencode \
+        2> {log}"
 
 
 ### Selective alignment
 rule salmon_quant:
     input: 
-        index = "results/trascriptome_quant/salmon/transcriptome_index",
+        index = "results/transcriptome_quant/salmon/transcriptome_index",
         transcripts_fa = config["reference"]["transcriptome_fasta"],
         read1 = join(reads_trimmed, PATTERN_R1_trimmed),
         read2 = join(reads_trimmed, PATTERN_R2_trimmed)
     output: 
-        tr_quant_sa = "results/trascriptome_quant/salmon/{sample}/quant.sf"
+        tr_quant_sa = "results/transcriptome_quant/salmon/{sample}/quant.sf"
     benchmark: 
         "results/benchmarks/salmon_quant_{sample}.txt"
     log: 
@@ -97,21 +95,19 @@ rule salmon_quant:
         n = config["program_specific"]["salmon_cpus"],
         salmon_Gibbs_samples = config["program_specific"]["salmon_Gibbs_samples"]
     shell: 
-        """
-        salmon quant
-        --libType A
-        -i {input.index}
-        -p {params.n}
-        -1 {input.read1}
-        -2 {input.read2}
-        -o results/trascriptome_quant/salmon/{wildcards.sample}/
-        --validateMappings
-        --mimicBT2
-        --rangeFactorizationBins 4
-        --seqBias
-        --gcBias
-        --reduceGCMemory
-        --posBias
-        --numGibbsSamples {params.salmon_Gibbs_samples}
-        2> {log}
-        """
+        "salmon quant \
+        --libType A \
+        -i {input.index} \
+        -p {params.n} \
+        -1 {input.read1} \
+        -2 {input.read2} \
+        -o results/transcriptome_quant/salmon/{wildcards.sample}/ \
+        --validateMappings \
+        --mimicBT2 \
+        --rangeFactorizationBins 4 \
+        --seqBias \
+        --gcBias \
+        --reduceGCMemory \
+        --posBias \
+        --numGibbsSamples {params.salmon_Gibbs_samples} \
+        2> {log}"

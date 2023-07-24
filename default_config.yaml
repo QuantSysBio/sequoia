@@ -14,13 +14,13 @@ slurm:
   output: "outfiles/%J.out"
 
 reference:
-  genome_fasta: ../../references/GRCh38.primary_assembly.genome.fa
-  transcriptome_fasta: ../../references/gencode.v40.transcripts.fa
-  gencode_translation_sequences_fasta: ../../references/gencode.v40.pc_translations.fa
-  reference_gtf: ../../references/gencode.v40.primary_assembly.annotation.gtf
-  reference_gff3: ../../references/gencode.v40.primary_assembly.annotation.gff3
-  gencode_metadata_TrEMBL: ../../references/gencode.v40.metadata.TrEMBL
-  gencode_metadata_SwissProt: ../../references/gencode.v40.metadata.SwissProt
+  genome_fasta: references/GRCh38.primary_assembly.genome.fa
+  transcriptome_fasta: references/gencode.v40.transcripts.fa
+  gencode_translation_sequences_fasta: references/gencode.v40.pc_translations.fa
+  reference_gtf: references/gencode.v40.primary_assembly.annotation.gtf
+  reference_gff3: references/gencode.v40.primary_assembly.annotation.gff3
+  gencode_metadata_TrEMBL: references/gencode.v40.metadata.TrEMBL
+  gencode_metadata_SwissProt: references/gencode.v40.metadata.SwissProt
 
 program_specific:
   fastp_cpus: 24
