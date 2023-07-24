@@ -43,14 +43,14 @@ def _combine_config_dict(config, default_config):
     return config
 
 
-def combine_config_with_default(config):
-    with open('default_config.yaml', 'r') as yamlfile:
+def combine_config_with_default(config, sequoia_dir_path):
+    with open(f'{sequoia_dir_path}/default_config.yaml', 'r') as yamlfile:
         default_config = yaml.load(yamlfile, Loader=yaml.FullLoader)
     return _combine_config_dict(config, default_config)
 
 
-def get_snakefile_path():
-    return os.path.abspath('src/Snakefile')
+def get_snakefile_path(sequoia_dir_path):
+    return os.path.abspath(f'{sequoia_dir_path}/src/Snakefile')
 
 
 def return_results(server_project_dir_path, sequoia_project_dir_path):
@@ -83,16 +83,15 @@ def return_results(server_project_dir_path, sequoia_project_dir_path):
 if __name__ == '__main__':
     sequoia_dir_path = os.path.dirname(os.path.abspath(sys.argv[0]))
     server_project_dir_path = sys.argv[1]
-
     project_name = os.path.basename(os.path.normpath(server_project_dir_path))
-    sequoia_project_dir_path = os.path.abspath(f'projects/{project_name}')
+    sequoia_project_dir_path = os.path.abspath(f'{sequoia_dir_path}/projects/{project_name}')
 
     with open(f'{server_project_dir_path}/sequoia_config.yaml', 'r') as yamlfile:
         config = yaml.load(yamlfile, Loader=yaml.FullLoader)
 
-    config = combine_config_with_default(config)
+    config = combine_config_with_default(config, sequoia_dir_path)
     prepare_working_directory(server_project_dir_path, sequoia_project_dir_path, sequoia_dir_path, config)
-    snakefile_path = get_snakefile_path()
+    snakefile_path = get_snakefile_path(sequoia_dir_path)
     slurm_config = config['slurm']
 
     p = subprocess.Popen([
@@ -112,7 +111,7 @@ if __name__ == '__main__':
         '--singularity-args', f'-B {sequoia_dir_path},{server_project_dir_path}/data/reads_fq',
         '--conda-prefix', f'{sequoia_dir_path}/.snakemake',
         '--singularity-prefix', f'{sequoia_dir_path}/.snakemake',
-        '-j', '3',
+        '-j', 'unlimited',
         '-w', '600',
         '--restart-times', '1',
         '--resources', 'load=100'],
