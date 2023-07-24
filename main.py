@@ -57,7 +57,10 @@ def return_results(server_project_dir_path, sequoia_project_dir_path):
     sequoia_results_dir_path = f'{sequoia_project_dir_path}/results'
     server_results_dir_path = f'{server_project_dir_path}/sequoia_results'
     
+    if os.path.exists(server_results_dir_path):
+        shutil.rmtree(server_results_dir_path)
     os.mkdir(server_results_dir_path)    
+    
     shutil.move(f'{sequoia_results_dir_path}/tr_2_prot/proteome_expressed.fasta',
                 f'{server_results_dir_path}/proteome_expressed.fasta')
     
