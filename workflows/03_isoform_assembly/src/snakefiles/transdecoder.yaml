@@ -1,0 +1,6 @@
+channels:
+ - r
+ - bioconda
+ - biobuilds
+dependencies:
+ - transdecoder=5.5.0

@@ -1,0 +1,6 @@
+max_cores:  72
+mem_mb: 60000
+min_filt_samples: 1
+min_filt_counts: 10
+phred_score: 20
+

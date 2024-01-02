@@ -1,0 +1,7 @@
+channels:
+ - conda-forge
+ - bioconda
+ - biobuilds
+dependencies:
+ - star=2.7.9a
+ - pigz=2.4

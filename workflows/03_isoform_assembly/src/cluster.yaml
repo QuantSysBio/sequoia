@@ -1,0 +1,10 @@
+__default__:
+  partition: "partition"
+  time: "{resources.time}"
+  nodes: 1
+  ncpus: "{resources.ncpus}"
+  mem: "{resources.mem}"
+  mempercpu: 3G
+  job-name: "{rule}"
+  output: "../outfiles/sequoia-%J.out"
+  chdir: 'path/to/project'
