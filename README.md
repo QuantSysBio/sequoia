@@ -1,6 +1,10 @@
 # Sequoia
-#### Sequence Expression Quantification Unknown ORF discovery and isoform assembly
-
+#### Sequence Expression Quantification Unknown ORF discovery and Isoform Assembly
+## Description
+Sequoia allows for mass spectrometry search space definition and facilitates multi-omics integration. Three workflows are available: 
+- (1) Exhaustive ORF definition can be done with genome and transcriptome information.
+- (2) Reference transcriptome quantification from RNA-seq data
+- (3) Reference-guided transcriptome assembly followed by ORF search on the new transcripts and quantification of the augmented transcriptome. 
 
 ## Installation
 ```
@@ -21,26 +25,21 @@ conda install -c conda-forge singularity
 time snakemake --use-singularity --use-conda -j 1 --conda-frontend conda --resources load=100
 ```
 
-## Slurm
-Connect to the Mascot server or any calc node to submit the Slurm jobs. 
-
 ### Install conda in your home directory
 Enter `bash Miniconda3-latest-Linux-x86_64.sh` and follow the instructions.
 After that, create the SPIsnake environment as described under **Installation**.
 
 ### Clone repo + upload data
 Enter `git clone https://github.com/QuantSysBio/sequoia` to retrieve the latest code. You might need to [generate a token](https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/) since GitHub recently removed the password authentication.
-If necessary, deposit your data in the correct directory using `sftp`, `scp` or `rsync`. Instructions can be found in the [QSB getting started](https://pad.gwdg.de/s/JlkAOXJ2f#) document.
 
-### Cluster execution
-- Make sure you are in the correct directory  and on the correct node
-- Sequoia is executed from a Bash screen session that prevents the job from crashing once you disconnect from `ssh`. Therefore, enter:
+### Cluster execution with Slurm
+- Sequoia is executed from a Bash screen session that prevents the job from terminating once you disconnect from `ssh`. Therefore, enter:
 `screen -S sequoia`
 - Activate the conda environment:
 `conda activate snakemake`
-- Submit the job to the `elbe` partition. (You can get an overview about which compute nodes are assigned to which partition by calling `sinfo`.)  
+- fill in the cluster configuration:`src/cluster.yaml`
 ```
-snakemake --use-singularity --use-conda --cluster-config src/cluster.yaml --cluster "sbatch -p {cluster.partition} -N {cluster.nodes} -c {cluster.ncpus} --mem {cluster.mem} --job-name {cluster.job-name} -o {cluster.output} -D {cluster.chdir} --exclusive" --conda-frontend conda -j 3 -w 600 --restart-times 3 --resources load=100
+snakemake --use-singularity --use-conda --cluster-config src/cluster.yaml --cluster "sbatch -p {cluster.partition} -N {cluster.nodes} -c {cluster.ncpus} --mem {cluster.mem} --job-name {cluster.job-name} -o {cluster.output} -D {cluster.chdir} --exclusive" --conda-frontend conda -j 1 -w 60 --resources load=100
 ```
-- Detach from the screen session by pressing `Ctrl+a+d`. You can resume to the session to check the progress via `screen -r spisnake`
+- Detach from the screen session by pressing `Ctrl+a+d`. You can resume to the session to check the progress via `screen -r sequoia`
 
