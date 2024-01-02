@@ -1,5 +1,0 @@
-"""folders.py: file to store paths to folfers"""
-download = "data/download"
-reads_fq = "data/reads_fq"
-reads_trimmed = "results/trimmed"
-tr_2_prot_dir = "results/tr_2_prot"
