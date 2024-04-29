@@ -90,7 +90,7 @@ rule salmon_quant:
     resources:
         ncpus = config["program_specific"]["salmon_cpus"],
         mem = config["program_specific"]["salmon_mem"],
-        load = 25
+        # load = 25
     params: 
         n = config["program_specific"]["salmon_cpus"],
         salmon_Gibbs_samples = config["program_specific"]["salmon_Gibbs_samples"]

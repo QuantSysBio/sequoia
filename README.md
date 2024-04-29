@@ -11,7 +11,7 @@ conda install -c conda-forge singularity
 
 ## Setup
 1. Define common job parameters in `config.yml` and `features.yaml`
-2. Place the paired reads in the `/data/reads_fq`. The first and second read files should end with `_1_fastq.gz` and `_2_fastq.gz` accordingly.  
+2. Place the paired reads in the `/data/reads_fq`. The first and second read files should end with `_1.fastq.gz` and `_2.fastq.gz` accordingly.  
 
 ## Execution
 ### Workflow check

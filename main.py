@@ -5,7 +5,7 @@ import yaml
 import shutil
 
 
-def prepare_working_directory(server_project_dir_path, sequoia_project_dir_path, sequoia_dir_path, config):
+def prepare_working_directory(server_project_dir_path, sequoia_project_dir_path, config):
     # main directory
     if not os.path.exists(sequoia_project_dir_path):
         os.makedirs(sequoia_project_dir_path)
@@ -25,7 +25,7 @@ def prepare_working_directory(server_project_dir_path, sequoia_project_dir_path,
 
     # references
     if not os.path.exists(f'{sequoia_project_dir_path}/references'):
-        os.symlink(f'{sequoia_dir_path}/references',
+        os.symlink(f'{server_project_dir_path}/data/references',
                    f'{sequoia_project_dir_path}/references')
         
     #config
@@ -93,7 +93,7 @@ if __name__ == '__main__':
         config = yaml.load(yamlfile, Loader=yaml.FullLoader)
 
     config = combine_config_with_default(config, sequoia_dir_path)
-    prepare_working_directory(server_project_dir_path, sequoia_project_dir_path, sequoia_dir_path, config)
+    prepare_working_directory(server_project_dir_path, sequoia_project_dir_path, config)
     snakefile_path = get_snakefile_path(sequoia_dir_path)
     slurm_config = config['slurm']
 
@@ -108,10 +108,10 @@ if __name__ == '__main__':
         f'-t {slurm_config["time"]} '
         f'--job-name {slurm_config["job_name"]} '
         f'-o {slurm_config["output"]} '
-        f'-D {sequoia_project_dir_path} --exclusive',
+        f'-D {sequoia_project_dir_path}', # --exclusive',
         '--cluster-cancel', 'scancel',
         '--conda-frontend', 'mamba',
-        '--singularity-args', f'-B {sequoia_dir_path},{server_project_dir_path}/data/reads_fq',
+        '--singularity-args', f'-B {sequoia_dir_path},{server_project_dir_path}/data/reads_fq,{server_project_dir_path}/data/references',
         '--conda-prefix', f'{sequoia_dir_path}/.snakemake',
         '--singularity-prefix', f'{sequoia_dir_path}/.snakemake',
         '-j', 'unlimited',
