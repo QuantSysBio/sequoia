@@ -1,5 +1,0 @@
-channels:
- - bioconda
-dependencies:
- - stringtie=2.1.4
- - gffcompare=0.11.2

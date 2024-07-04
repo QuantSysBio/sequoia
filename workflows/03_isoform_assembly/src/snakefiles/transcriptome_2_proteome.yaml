@@ -1,7 +1,0 @@
-channels:
- - bioconda
- - biobuilds
- - r 
-dependencies:
- - gffread=0.12.1
- - seqkit=0.11.0
