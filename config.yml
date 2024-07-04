@@ -1,0 +1,47 @@
+resources:
+  max_mem: 240G
+  min_mem: 5G
+  min_cpus: 1
+  max_cpus:  72
+
+slurm:
+  partition: "elbe"
+  nodes: 1
+  time: 2-00:00:00
+  ncpus: "{resources.ncpus}"
+  mem: "{resources.mem}"
+  job_name: "{rule}"
+  output: "outfiles/%J.out"
+
+workflow:
+  exhaustive_ORFs : False
+  reference_quant : True
+  isoform_assembly : True
+
+reference:
+  genome_fasta: data/references/GRCh38.primary_assembly.genome.fa
+  transcriptome_fasta: data/references/gencode.v45.transcripts.fa
+  gencode_translation_sequences_fasta: data/references/gencode.v45.pc_translations.fa
+  reference_gtf: data/references/gencode.v45.primary_assembly.annotation.gtf
+  reference_gff3: data/references/gencode.v45.primary_assembly.annotation.gff3
+  gencode_metadata_TrEMBL: data/references/gencode.v45.metadata.TrEMBL
+  gencode_metadata_SwissProt: data/references/gencode.v45.metadata.SwissProt
+  reference_gtf_no_ERCC: data/references/gencode.v45.primary_assembly.annotation.gtf.gz
+  gencode_translation_sequences_fasta_no_ERCC: data/references/gencode.v45.pc_translations.fa.gz
+  transcriptome_fasta_no_ERCC: data/references/gencode.v45.transcripts.fa.gz
+  external_sequences : data/references/ERCC_spike-ins/ercc_gencode.fasta
+  ERCC_normalization : True
+
+program_specific:
+  fastp_cpus: 24
+  star_cpus : 12
+  stringtie_cpus : 12
+  salmon_cpus: 18
+  salmon_mem: 32G
+  salmon_Gibbs_samples: 50
+  min_filt_samples: 1
+  min_filt_counts: 10
+  phred_score: 20
+  min_orf_length: 8
+  start_codons: ATG,CTG,GTG,ATC,ACG
+...
