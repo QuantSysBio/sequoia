@@ -1,0 +1,7 @@
+channels:
+ - conda-forge
+ - bioconda
+ - biobuilds
+dependencies:
+ - salmon=1.5.2
+ 

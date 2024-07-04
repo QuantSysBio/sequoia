@@ -1,0 +1,16 @@
+channels:
+  - conda-forge
+  - bioconda
+  - r
+dependencies:
+  - r-stringr
+  - r-base
+  - r-readr
+  - r-vroom
+  - r-tidyr
+  - r-dplyr
+  - r-data.table
+  - bioconductor-BSgenome.Hsapiens.UCSC.hg38
+  - bioconductor-GenomicFeatures
+  - bioconductor-plyranges
+  - bioconductor-ORFik
