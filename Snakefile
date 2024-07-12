@@ -44,10 +44,6 @@ if config['workflow']['exhaustive_ORFs']:
 
 rule all:
     input:
-        ### Trimmed reads
-        #expand("results/trimmed/{sample}_1.fq.gz", sample = SAMPLES),
-        #expand("results/trimmed/{sample}_2.fq.gz", sample = SAMPLES),
-        #multiqc_report = expand("results/{wf}/multiqc/multiqc_report.html", wf = qc_path)
         expand("results/{wf}.txt", wf = qc_path)
             
 
@@ -57,8 +53,5 @@ rule all:
 ### snakemake --dag > dag.dot && dot -Tsvg < dag.dot > dag.svg
 ### snakemake --filegraph > filegraph.dot && dot -Tsvg < filegraph.dot > filegraph.svg
 ### snakemake --rulegraph > rulegraph.dot && dot -Tsvg < rulegraph.dot > rulegraph.svg
-
-### snakemake --use-conda --use-singularity -j 1 -r --verbose
-### time snakemake --use-singularity --use-conda -j 27 --conda-frontend conda --resources load=100
 
 
