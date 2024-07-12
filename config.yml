@@ -26,9 +26,6 @@ reference:
   reference_gff3: data/references/gencode.v45.primary_assembly.annotation.gff3
   gencode_metadata_TrEMBL: data/references/gencode.v45.metadata.TrEMBL
   gencode_metadata_SwissProt: data/references/gencode.v45.metadata.SwissProt
-  reference_gtf_no_ERCC: data/references/gencode.v45.primary_assembly.annotation.gtf.gz
-  gencode_translation_sequences_fasta_no_ERCC: data/references/gencode.v45.pc_translations.fa.gz
-  transcriptome_fasta_no_ERCC: data/references/gencode.v45.transcripts.fa.gz
   external_sequences : data/references/ERCC_spike-ins/ercc_gencode.fasta
   ERCC_normalization : True
 
@@ -43,5 +40,5 @@ program_specific:
   min_filt_counts: 10
   phred_score: 20
   min_orf_length: 8
-  start_codons: ATG,CTG,GTG,ATC,ACG
+  start_codons: ATG|CTG|GTG|ATC|ACG
 ...
