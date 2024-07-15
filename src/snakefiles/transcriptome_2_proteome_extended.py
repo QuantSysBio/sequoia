@@ -106,6 +106,21 @@ rule transdecoder_copyfiles:
         cp -f {params.cds} {output.cds} && \
         cp -f {params.dat} {output.dat}"
 
+rule download_hmm:
+    input:
+        "https://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz"
+    output:
+        "data/hmm/Pfam-A.hmm.gz"
+    shell:
+        "wget -O {output} https://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz"
+
+rule decompress_hmm:
+    input:
+        "data/hmm/Pfam-A.hmm.gz"
+    output:
+        "data/hmm/Pfam-A.hmm"
+    shell:
+        "gzip -dk {input}"
 
 rule hmmpress:
     input: 
