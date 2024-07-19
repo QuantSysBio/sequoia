@@ -3,7 +3,7 @@ rule filter_BAM:
     input:
         bam = "results/extended/STAR_2nd_pass/{sample}.Aligned.sortedByCoord.out.bam"
     output:
-        protected("results/extended/filter_BAM/{sample}.Aligned.trimmed.out.bam")
+        "results/extended/filter_BAM/{sample}.Aligned.trimmed.out.bam"
     benchmark:
         "results/extended/benchmarks/{sample}.filter_BAM.txt"
     log:
