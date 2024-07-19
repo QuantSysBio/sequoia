@@ -131,7 +131,6 @@ CDS_seq_6_frame[!CDS_seq_6_frame %in% Gencode_prot]
 CDS_annot <- AAStringSet()
 CDS_annot_NT <- DNAStringSet()
 seq_along(Gencode_prot)[1:2]
-print("##################################################")
 for (i in seq_along(Gencode_prot)[1:2]) {
   # i = 1
   #rm(char_dist)
@@ -190,25 +189,20 @@ for (i in seq_along(Gencode_prot)[1:2]) {
 }
 # CDS_annot %>% names() %>% View()
 print(min_ORF_length)
-print("11111111111111111111111111111111111111")
 # ---------------------------  Filter by expression & length --------------------------- 
 print(width(CDS_annot))
-print("2222222222222222222222222222222222222222")
 print(rep(min_ORF_length, length(CDS_annot)))
-print('333333333333333333333333333')
 print(width(CDS_annot) >= rep(min_ORF_length, length(CDS_annot)))
-print('4444444444444444444444444')
 print(CDS_annot[width(CDS_annot) >= rep(min_ORF_length, length(CDS_annot))])
-print('5555555555555555555555555555')
 CDS_annot <- CDS_annot[width(CDS_annot) >= rep(min_ORF_length, length(CDS_annot))]
-print("333333333333333333333333333")
+
 CDS_annot_names <- CDS_annot %>% 
   names() %>%
   str_split_fixed("[[|]]", Inf) %>%
   as.data.frame()
 
 # CDS_expressed <- CDS_annot[CDS_annot_names$V2 %in% expr$TXNAME[expr$tr_expressed == TRUE]]
-print("2222222222222222222222222222222222222222")
+
 # ---------------------------  Save fasta --------------------------- 
 CDS_annot[str_detect(names(CDS_annot), "main_ORF")] %>%
   unique() %>%
