@@ -272,7 +272,7 @@ if (ERCC_present) {
 }
 
 ### ----------------------------------------- Outputs -----------------------------------------
-suppressWarnings(dir.create("results/tr_2_prot", recursive = T))
+#suppressWarnings(dir.create("results/tr_2_prot", recursive = T))
 if (exists("snakemake")) {
   write.fasta(sequences = expr_prot_fasta,
               names = names(expr_prot_fasta), 
