@@ -7,7 +7,6 @@
 #               
 # author:       Yehor Horokhovskyi
 
-# library(bettermc)
 library(BSgenome.Hsapiens.UCSC.hg38)
 library(GenomicFeatures)
 library(data.table)
@@ -37,9 +36,9 @@ Ncpu = 7
 
 # For non-CDS ORF discovery
 min_ORF_length = 8
-alt_init_codons = strsplit(snakemake@params[['init_codons']], ',')[[1]]
+alt_init_codons = snakemake@params[['init_codons']]
 # attributes(GENETIC_CODE)$alt_init_codons <- c("TTG", "CTG") # original
-attributes(GENETIC_CODE)$alt_init_codons <- c(alt_init_codons) # cryptic
+attributes(GENETIC_CODE)$alt_init_codons <- strsplit(snakemake@params[['init_codons']], '|')[[1]] # cryptic
 
 # GTF annotation
 input <- list()
@@ -64,27 +63,8 @@ txdb <- makeTxDbFromGFF(file = paste0(snakemake@input[['reference_gff3']]),
                         organism="Homo sapiens")
 txdb
 
-# # Load expression data
-# expr <- vroom(paste0("data/expressed_all.csv"))
-# expr_tr <- expr %>%
-#   filter(tr_expressed == TRUE) %>%
-#   pull(TXNAME) %>%
-#   unique()
-
 ### ------------------ End user variables ------------------------------
 is.wholenumber <- function(x, tol = .Machine$double.eps^0.5)  abs(x - round(x)) < tol
-
-# # Select expressed transcripts and exons
-# expr_tr_exon <- input$gtf_all %>%
-#   # filter(transcript_id %in% expr_tr) %>%
-#   filter(type %in% c("transcript", "exon")) %>%
-#   as_tibble() %>%
-#   pull(exon_id) %>%
-#   na.omit() %>%
-#   unique() %>%
-#   c(expr_tr)
-# head(expr_tr_exon)
-# tail(expr_tr_exon)
 
 # Extract ORFs from genomic features
 seqlevels_txdb <- seqlevels(txdb)
@@ -330,25 +310,6 @@ for (stratum in genomic_strata[1]) {
         unique() %>%
         writeXStringSet(filepath = paste0(snakemake@output[['all_result']], stratum, "_ORFs_inframe_NT.fa"), append = T)
       
-      # # Expressed
-      # keep <- names(fasta_files$ORFs_noCDS) %in% annotation_tables$ORFs_noCDS$ORF_name[annotation_tables$ORFs_noCDS$expressed == T]
-      # fasta_files$ORFs_noCDS[keep] %>%
-      #   translate(no.init.codon = T, if.fuzzy.codon = "solve") %>%
-      #   unique() %>%
-      #   writeXStringSet(filepath = paste0("results/expressed/expressed_", stratum, "_ORFs_noCDS.fa"), append = T)
-      # 
-      # keep <- names(fasta_files$ORFs_CDS_frameshift) %in% annotation_tables$ORFs_CDS_frameshift$ORF_name[annotation_tables$ORFs_CDS_frameshift$expressed == T]
-      # fasta_files$ORFs_CDS_frameshift[keep] %>%
-      #   translate(no.init.codon = T, if.fuzzy.codon = "solve") %>%
-      #   unique() %>%
-      #   writeXStringSet(filepath = paste0("results/expressed/expressed_", stratum, "_ORFs_frameshift.fa"), append = T)
-      # 
-      # keep <- names(fasta_files$ORFs_CDS_inframe) %in% annotation_tables$ORFs_CDS_inframe$ORF_name[annotation_tables$ORFs_CDS_inframe$expressed == T]
-      # fasta_files$ORFs_CDS_inframe[keep] %>%
-      #   translate(no.init.codon = T, if.fuzzy.codon = "solve") %>%
-      #   unique() %>%
-      #   writeXStringSet(filepath = paste0("results/expressed/expressed_", stratum, "_ORFs_inframe.fa"), append = T)
-      
       ### Export tables
       # All
       annotation_tables$ORFs_noCDS %>%
@@ -365,25 +326,6 @@ for (stratum in genomic_strata[1]) {
         select(-ORF_name) %>%
         unique() %>%
         vroom_write(file = paste0(snakemake@output[['all_result']], stratum, "_ORFs_inframe.csv"), delim = ",", append = T, num_threads = Ncpu)
-      
-      # # Expressed
-      # annotation_tables$ORFs_noCDS %>%
-      #   select(-ORF_name) %>%
-      #   filter(expressed == TRUE) %>%
-      #   unique() %>%
-      #   vroom_write(file = paste0("results/expressed/expressed_", stratum, "_ORFs_noCDS.csv"), delim = ",", append = T, num_threads = Ncpu)
-      # 
-      # annotation_tables$ORFs_CDS_frameshift %>%
-      #   select(-ORF_name) %>%
-      #   filter(expressed == TRUE) %>%
-      #   unique() %>%
-      #   vroom_write(file = paste0("results/expressed/expressed_", stratum, "_ORFs_frameshift.csv"), delim = ",", append = T, num_threads = Ncpu)
-      # 
-      # annotation_tables$ORFs_CDS_inframe %>%
-      #   select(-ORF_name) %>%
-      #   filter(expressed == TRUE) %>%
-      #   unique() %>%
-      #   vroom_write(file = paste0("results/expressed/expressed_", stratum, "_ORFs_inframe.csv"), delim = ",", append = T, num_threads = Ncpu)
     }
   }
 }
