@@ -62,16 +62,6 @@ tx2gene <- reference_gff3 %>%
   dplyr::rename(GENEID = gene_id, 
          TXNAME = transcript_id)
 
-### Include ERCCs
-if (file.exists("data/references/ERCC_spike-ins/ercc_gencode.gff")) {
-  ERCC_names <- read_gff("data/references/ERCC_spike-ins/ercc_gencode.gff") %>%
-    as_tibble() %>%
-    select(seqnames, gene_id) %>%
-    dplyr::rename(GENEID = gene_id, 
-           TXNAME = seqnames)
-  
-  tx2gene <- bind_rows(ERCC_names, tx2gene)
-}
 
 # --------------------------------------------------- End user inputs --------------------------
 # Import abundance estimates on transcript level
