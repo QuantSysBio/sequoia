@@ -34,9 +34,11 @@ time snakemake --use-singularity --use-conda -j 1 --conda-frontend mamba --resou
   `screen -S sequoia`
 - Activate the conda environment:
   `conda activate snakemake`
+- Install proper job executer:
+  `conda install -c bioconda snakemake-executor-plugin-slurm`
 - fill in the cluster configuration:`src/cluster.yaml`
 ```
-snakemake --use-singularity --use-conda --cluster-config src/cluster.yaml --cluster "sbatch -p {cluster.partition} -N {cluster.nodes} -c {cluster.ncpus} --mem {cluster.mem} --job-name {cluster.job-name} -o {cluster.output} -D {cluster.chdir} --exclusive" --conda-frontend conda -j 1 -w 60 --resources load=100
+snakemake --profile ./src
 ```
 - Detach from the screen session by pressing `Ctrl+a+d`. You can resume to the session to check the progress via `screen -r sequoia`
 
