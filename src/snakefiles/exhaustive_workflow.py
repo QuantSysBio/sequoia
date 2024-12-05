@@ -28,7 +28,7 @@ rule cryptic:
     """
     input:
         reference_gff3 = config["reference"]["reference_gtf_no_ERCC"],
-        CDS_out = "results/Exhaustive/CDS_NT.fasta"
+        CDS_out = "results/Exhaustive/CDS/CDS_NT.fasta"
     output:
         all_result = directory("results/Exhaustive/cryptic/all"),
         Workflow_output = "results/exhaustive.txt"
